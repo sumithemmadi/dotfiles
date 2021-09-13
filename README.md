@@ -13,3 +13,10 @@ cd /path/to/dotfiles
 
 ./install.sh
 ```
+
+```bash
+git clone https://github.com/sumithemmadi/dotfiles.git
+cd dotfiles
+./install.sh
+exit
+```
