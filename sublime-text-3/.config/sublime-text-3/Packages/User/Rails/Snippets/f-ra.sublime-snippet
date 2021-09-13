@@ -1,0 +1,7 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>f.ra</tabTrigger>
+  <description>radio button</description>
+  <content><![CDATA[<%= form.radio_box :${1:field}$0 %>
+<%= form.label :$1 %>]]></content>
+</snippet>

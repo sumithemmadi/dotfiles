@@ -1,0 +1,8 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>each</tabTrigger>
+  <description>each with block</description>
+  <content><![CDATA[<% ${1:@items}.each do |${2:${1/(?:[@.]|^)([_a-z0-9]+?)(?:e?s)?$/$1/}}| %>
+  $0
+<% end %>]]></content>
+</snippet>

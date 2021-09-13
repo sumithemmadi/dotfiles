@@ -1,0 +1,6 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>=</tabTrigger>
+  <description>&lt;%= ... %&gt;</description>
+  <content><![CDATA[<%= ${0:${SELECTION/^\s*//}} %>]]></content>
+</snippet>

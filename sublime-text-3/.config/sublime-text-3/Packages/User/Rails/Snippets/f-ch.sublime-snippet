@@ -1,0 +1,7 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>f.ch</tabTrigger>
+  <description>check box</description>
+  <content><![CDATA[<%= form.check_box :${1:field}$0 %>
+<%= form.label :$1 %>]]></content>
+</snippet>

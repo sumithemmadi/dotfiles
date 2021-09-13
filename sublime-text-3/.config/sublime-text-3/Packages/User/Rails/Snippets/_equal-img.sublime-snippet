@@ -1,0 +1,6 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>=img</tabTrigger>
+  <description>image_tag helper</description>
+  <content><![CDATA[<%= image_tag "${1:filename}", alt: "${2:alt text}"$0 %>]]></content>
+</snippet>

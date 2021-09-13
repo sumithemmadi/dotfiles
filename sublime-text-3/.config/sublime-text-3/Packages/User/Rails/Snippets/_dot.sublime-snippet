@@ -1,0 +1,6 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>.</tabTrigger>
+  <description>div tag with class</description>
+  <content><![CDATA[<div class="${1:$SELECTION}">$0</div>]]></content>
+</snippet>

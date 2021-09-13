@@ -1,0 +1,9 @@
+<snippet>
+  <scope>text.html.ruby</scope>
+  <tabTrigger>case</tabTrigger>
+  <description>case statement</description>
+  <content><![CDATA[<% case ${1:value} %>
+<% when ${2:pattern} %>
+  $0
+<% end %>]]></content>
+</snippet>

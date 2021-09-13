@@ -1,0 +1,154 @@
+[include]
+    path = user
+
+[url "git://github.com"]
+    insteadOf = "gh:"
+    insteadOf = "github:"
+
+[core]
+    pager = ""
+    eol = lf # force LF EOLs
+    autocrlf = input
+
+[color]
+    ui = auto
+
+[pretty]
+    compact = format:%Cgreen%h%Creset %Cblue%cd%Creset %s %Cred<%an>%Creset
+    detailed = format:%Cgreen%h%Creset %Cblue%cr (%cD)%Creset %Cred<%an>%Creset%n%s%n%n%b%n
+
+[init]
+    defaultBranch = master
+
+[log]
+    abbrevCommit = true # show SHA prefix only
+    date = iso
+
+[push]
+    default = current
+
+[pull]
+    ff = only
+
+[rebase]
+    stat = true
+
+[grep]
+    lineNumber = true # always show line number
+    extendRegexp = true # enable extended regex
+
+[alias]
+    s = status --short --branch
+    d = diff HEAD --
+    delta = diff --staged
+    l = log --pretty=compact --date=short --reverse
+    ll = log --pretty=detailed --reverse
+    ld = log --pretty=compact --date=short --patch --reverse
+    a = add
+    c = commit
+    cm = commit -m
+    acm = "! f(){ git add . ; git commit -m \"$1\"; }; f"
+    co = checkout
+    br = branch
+
+    # git amend
+    #   amends the last commit with staged changes
+    amend = commit --amend
+
+    # git reword
+    #   edits the commit message of the last commit
+    reword = commit --amend --only
+
+    # git append
+    #   adds staged changes to the last commit without modifying the
+    #   commit message
+    append = commit --amend --reuse-message=HEAD
+
+    # git unstage [FILENAME1 FILENAME2 ...]
+    #   unstages specified files; unstages all changes if no file names
+    #   are provided
+    unstage = reset HEAD --
+
+    # git uncommit
+    #   removes the last commit entry but preserves file changes
+    uncommit = reset --soft HEAD~1
+
+    # git reload [FILENAME1 FILENAME2 ...]
+    #   rolls back specified files to the last commit; rolls back all
+    #   tracked changes if no file names are provided
+    reload = checkout --force HEAD --
+
+    # git setup
+    #   initializes a repo in the current directory, including an
+    #   initial commit message
+    setup = "! git init && git commit --allow-empty -m 'git init'"
+
+    # git hubssh
+    #   sets origin to $GITHUB_USERNAME's project, using SSH
+    hubssh = "! : ${GITHUB_USERNAME?'missing environment variable'} ; git remote rm origin 2>/dev/null ; git remote add origin git@github.com:${GITHUB_USERNAME}/$(basename $(pwd)).git"
+
+    # git hubhttps
+    #   sets origin to $GITHUB_USERNAME's project, using HTTPS
+    hubhttps = "! : ${GITHUB_USERNAME?'missing environment variable'} ; git remote rm origin 2>/dev/null ; git remote add origin https://github.com/${GITHUB_USERNAME}/$(basename $(pwd))"
+
+    # git recover FILENAME
+    #   recovers the last known version of a deleted file
+    recover = "! f(){ git checkout $(git rev-list -n 1 HEAD -- \"$1\")^ -- \"$1\"; git unstage $1; }; f"
+
+    # git obliterate FILENAME
+    #   deletes $FILENAME and removes it entirely from git history
+    obliterate = "! f(){ git filter-branch --force --index-filter \"git rm -r --cached --ignore-unmatch \\\"$1\\\"\" --prune-empty --tag-name-filter cat -- --all; }; f"
+
+    ### utilities
+    date = log -n1 --pretty=format:%cd --date=short
+    sha = rev-list -n1
+    rootof = rev-list --max-parents=0 -n1
+
+    thisbranch = rev-parse --abbrev-ref HEAD
+    masterbranch = "! f(){ if git remote get-url origin > /dev/null 2>&1; then if ! git symbolic-ref refs/remotes/origin/HEAD > /dev/null 2>&1; then git remote set-head origin --auto > /dev/null; fi; local branchname=$(basename $(git symbolic-ref refs/remotes/origin/HEAD)); fi; echo ${branchname:-$(git config init.defaultBranch)}; }; f"
+
+    freezepoint = "! f(){ local thisbranch=$(git thisbranch); local masterbranch=$(git masterbranch); if [ $thisbranch = $masterbranch ]; then local base=$(git rootof $thisbranch); else local base=$(git merge-base $masterbranch $thisbranch); fi; local tag=$(git tag --contains $base --sort=-committerdate | head -n1); git merge-base $thisbranch ${tag:-$base}; }; f"
+
+    # git reup [BASE]
+    #   fetches latest upstream/$BASE branch (default: master), rebases
+    #   local $BASE onto it, pushes local $BASE to origin/$BASE, and
+    #   rebases current branch onto $BASE
+    reup = "! f(){ local basebranch=${1:-$(git masterbranch)}; local thisbranch=$(git thisbranch); git fetch upstream $basebranch && git rebase upstream/$basebranch $basebranch && git push origin $basebranch && if [ $thisbranch != $basebranch ]; then git rebase $basebranch $thisbranch; fi; }; f"
+
+    # git copr USER:BRANCH [LOCALBRANCH]
+    #   fetches $BRANCH from $USER's fork on GitHub and checks it out as
+    #   $LOCALBRANCH (default: $BRANCH)
+    copr = "! f(){ local user=${1%%:*}; local branch=${1#*:}; local localbranch=${2:-$branch}; git fetch git@github.com:${user}/$(basename $(pwd)).git ${branch}:${localbranch} && git co $localbranch; }; f"
+
+    # git pupr USER:BRANCH [LOCALBRANCH]
+    #   pushes $LOCALBRANCH (default: $BRANCH) to $BRANCH of $USER's
+    #   fork on GitHub
+    pupr = "! f(){ local user=${1%%:*}; local branch=${1#*:}; local localbranch=${2:-$branch}; git push git@github.com:${user}/$(basename $(pwd)).git ${localbranch}:${branch}; }; f"
+
+    # git rewrite [SHA]
+    #   interactive rebase starting at optional $SHA or otherwise at the
+    #   first commit since most recent tag containing branch history
+    rewrite = "! f(){ if [ $# -gt 0 ]; then git rebase -i \"$1\"~1; else git rebase -i $(git freezepoint); fi; }; f"
+    rw = "! git rewrite"
+
+    # git restoredates
+    #   restores commit dates to their original value
+    #   used after interactive rebase (or `git rewrite`)
+    restoredates = "! git filter-branch --force --env-filter 'GIT_COMMITTER_DATE=$GIT_AUTHOR_DATE; export GIT_COMMITTER_DATE' $(git freezepoint)..HEAD"
+
+    # git setdate SHA DATE
+    #   sets date for commit $SHA to $DATE
+    setdate = "! f(){ COMMIT_FULL_ID=$(git sha \"$1\") DATE_TO_SET=\"$2\" git filter-branch --force --env-filter 'if [ $GIT_COMMIT = $COMMIT_FULL_ID ]; then export GIT_AUTHOR_DATE=\"${DATE_TO_SET}\" && export GIT_COMMITTER_DATE=\"${DATE_TO_SET}\"; fi'; }; f"
+
+    # git forceinit
+    #   rewrites history to include a 'git init' commit
+    forceinit = "! git checkout --orphan forcinginit && git rm -rf . && GIT_AUTHOR_DATE=$(git date $(git rootof master))T00:00:00 GIT_COMMITTER_DATE=$GIT_AUTHOR_DATE git commit --allow-empty -m 'git init' && git rebase --committer-date-is-author-date --onto forcinginit --root master && git branch -d forcinginit"
+
+    # git dir2master SUBDIRECTORY
+    #   turns $SUBDIRECTORY into the master branch, removing all other
+    #   files and history
+    dir2master = "! f(){ git filter-branch --prune-empty --subdirectory-filter \"$1\" master; }; f"
+
+    # git minify
+    #   collects garbage and such
+    minify = "! git reflog expire --expire=now --all && git gc --aggressive --prune=all"

@@ -1,0 +1,11 @@
+# development notes
+/.notes
+
+# temporary files
+*~
+
+# OSX crap
+.DS_Store
+
+# Linux file system crap
+.fuse_hidden*
