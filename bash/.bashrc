@@ -75,10 +75,10 @@ shopt -s globstar 2> /dev/null
 
 # Enable contextual completion (credit: Ubuntu default .bashrc)
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+  if [ -f $PREFIX/usr/share/bash-completion/bash_completion ]; then
+    . $PREFIX/usr/share/bash-completion/bash_completion
+  elif [ -f $PREFIX/etc/bash_completion ]; then
+    . $PREFIX/etc/bash_completion
   fi
 fi
 
