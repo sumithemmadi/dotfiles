@@ -4,7 +4,7 @@
 
 # Prompt "\n[TIME(aqua)] PWD(blue)\n$ "
 # via http://ezprompt.net/
-export PS1="\n╭─[\[\e[36m\]\t\[\e[m\]] \[\e[34m\]\w\[\e[m\]\n╰─\\$ "
+export PS1="\n╭─[\[\e[35m\]\t\[\e[m\]] \[\e[32m\]\w\[\e[m\]\n╰─\\$ "
 
 
 # Path
