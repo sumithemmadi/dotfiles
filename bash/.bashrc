@@ -119,4 +119,5 @@ in_each_dir() {
 if [ -f ~/.bashrc_secrets ]; then
   . ~/.bashrc_secrets
 fi
+clear
 neofetch
