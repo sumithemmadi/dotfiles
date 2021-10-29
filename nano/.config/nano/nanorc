@@ -31,7 +31,7 @@ set atblanks
 set tabsize 2
 
 # Convert typed tabs to spaces.
-set tabstospaces
+# set tabstospaces
 
 # Editor key bindings
 bind M-S writeout main
