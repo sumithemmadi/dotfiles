@@ -28,7 +28,7 @@ set softwrap
 set atblanks
 
 # Use a tab size of 2 columns.
-set tabsize 2
+set tabsize 4
 
 # Convert typed tabs to spaces.
 # set tabstospaces
